@@ -7,13 +7,13 @@
     <style>
         :root {
             --bg-color: #f4f4f4;
-            --text-color: #333;
+            --text-color: #333; /* Deep Charcoal */
             --accent-color: #666;
             --card-bg: #ffffff;
             --border: #ddd;
             --holiday-text: #e67e22;
-            --track-color: #f0f0f0;
-            --track-text: #111;
+            --track-color: #f0f0f0; /* Subtle Gray for connected blocks */
+            --track-text: #111;    /* Strong black for tracked dates */
             --stat-bg: #f9f9f9;
         }
 
@@ -30,9 +30,9 @@
 
         .container {
             width: 85%;
-            max-width: 270px;
+            max-width: 270px; 
             background: var(--card-bg);
-            padding: 15px;
+            padding: 15px; 
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid var(--border);
@@ -88,7 +88,6 @@
         }
         
         #festival-footer { margin-top: 10px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 0.65rem; color: var(--accent-color); }
-        #last-login-tag { font-size: 0.55rem; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -104,11 +103,7 @@
 
     <div class="stats-row">
         <div class="stat-box">
-            <span class="stat-label">SESSION</span>
-            <span class="stat-num" id="session-time">0m</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-label">STREAK</span>
+            <span class="stat-label">CURRENT STREAK</span>
             <span class="stat-num" id="login-streak">0</span>
         </div>
     </div>
@@ -127,19 +122,16 @@
     </div>
 
     <div id="festival-footer"></div>
-    <div id="last-login-tag">Logged in at: <span id="start-time">--:--</span></div>
 </div>
 
 <script>
     const indianHolidays = { '0-26': 'Republic Day', '7-15': 'Independence Day', '9-2': 'Gandhi Jayanti', '11-25': 'Christmas' };
-    let sessionSeconds = 0;
     const todayStr = new Date().toDateString();
 
     function handleTracking() {
         let loginHistory = JSON.parse(localStorage.getItem('sf_login_history') || "[]");
         let streak = parseInt(localStorage.getItem('sf_streak') || "0");
         let lastLogin = localStorage.getItem('sf_last_login');
-        let startTime = localStorage.getItem('sf_start_time') || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
         if (lastLogin !== todayStr) {
             loginHistory.push(todayStr);
@@ -148,16 +140,12 @@
             let yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             streak = (lastLogin === yesterday.toDateString()) ? (streak + 1) : 1;
-            
-            startTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
             localStorage.setItem('sf_login_history', JSON.stringify(loginHistory));
             localStorage.setItem('sf_streak', streak);
             localStorage.setItem('sf_last_login', todayStr);
-            localStorage.setItem('sf_start_time', startTime);
         }
         document.getElementById('login-streak').textContent = streak;
-        document.getElementById('start-time').textContent = startTime;
     }
 
     function updateDashboard() {
@@ -165,9 +153,6 @@
         const hrs = now.getHours();
         const dateKey = `${now.getMonth()}-${now.getDate()}`;
         
-        sessionSeconds++;
-        document.getElementById('session-time').textContent = Math.floor(sessionSeconds / 60) + "m";
-
         const urlParams = new URLSearchParams(window.location.search);
         document.getElementById('user-name').textContent = urlParams.get('name') || "User";
 
