@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utility Sidebar</title>
+    <title>Salesforce Tracker Utility</title>
     <style>
         :root {
             --bg-color: #f4f4f4;
-            --text-color: #333;
+            --text-color: #333; /* Deep Charcoal */
             --accent-color: #666;
             --card-bg: #ffffff;
             --border: #ddd;
+            --holiday-text: #e67e22;
+            --track-color: #f0f0f0; /* Subtle Gray for connected blocks */
+            --track-text: #111;    /* Strong black for tracked dates */
+            --stat-bg: #f9f9f9;
         }
 
         body {
@@ -18,170 +22,179 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
-            justify-content: center; /* Centers vertically for your 16:10 screen */
+            justify-content: center;
             align-items: center;
             height: 100vh;
         }
 
         .container {
             width: 90%;
-            max-width: 300px;
+            max-width: 320px;
             background: var(--card-bg);
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid var(--border);
-        }
-
-        /* Dynamic Greeting Section */
-        #greeting-container {
             text-align: center;
-            margin-bottom: 10px;
         }
 
-        #greet-text {
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        #greeting-container { margin-bottom: 5px; }
+        #greet-text { font-size: 0.8rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1.5px; margin: 0; }
+        #user-name { font-size: 1.6rem; font-weight: bold; color: var(--text-color); }
 
-        #user-name {
-            font-size: 1.5rem;
+        #clock { font-size: 3rem; font-weight: 300; margin: 10px 0 0 0; font-variant-numeric: tabular-nums; color: #111; }
+        #date-display { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; margin-bottom: 15px; }
+
+        /* Updated Stats Theme */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: var(--stat-bg);
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .stat-box { text-align: center; }
+        .stat-label { display: block; font-size: 0.6rem; color: var(--accent-color); font-weight: bold; letter-spacing: 0.5px; }
+        .stat-num { font-size: 1.2rem; font-weight: 700; color: var(--text-color); }
+
+        #holiday-msg { font-size: 0.85rem; font-weight: 700; color: var(--holiday-text); margin-bottom: 10px; }
+
+        /* Calendar Styling for Connected Blocks */
+        table { width: 100%; border-collapse: collapse; }
+        th { font-size: 0.65rem; color: #bbb; padding: 10px 0; text-transform: uppercase; }
+        td { 
+            padding: 10px 0; 
+            font-size: 0.85rem; 
+            position: relative;
+            width: 14.28%;
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+        }
+        
+        /* Monochromatic Connected Block */
+        .logged-in-day {
+            background-color: var(--track-color);
+            color: var(--track-text);
             font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            text-transform: capitalize;
         }
 
-        /* Clock Styles */
-        #clock {
-            font-size: 2.8rem;
-            font-weight: 300;
-            text-align: center;
-            margin-bottom: 5px;
-            color: var(--text-color);
-        }
-
-        #date-display {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--accent-color);
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Calendar Styles */
-        .calendar {
-            width: 100%;
-        }
-
-        .calendar-header {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            font-size: 0.7rem;
-            color: var(--accent-color);
-            padding: 5px 0;
-        }
-
-        td {
-            text-align: center;
-            padding: 8px 0;
-            font-size: 0.85rem;
+        .sun-col:not(.logged-in-day) { color: #e74c3c; font-weight: bold; }
+        
+        .today { 
+            background-color: var(--text-color) !important; 
+            color: #fff !important; 
             border-radius: 4px;
         }
-
-        .today {
-            background-color: var(--text-color);
-            color: #fff;
-            font-weight: bold;
-        }
+        
+        #festival-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 0.7rem; color: var(--accent-color); }
+        #last-login-tag { font-size: 0.6rem; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="greeting-container">
-        <p id="greet-text">Welcome</p>
-        <span id="user-name">Trailblazer</span>
+        <p id="greet-text">Namaste</p>
+        <span id="user-name">Explorer</span>
     </div>
 
     <div id="clock">00:00:00</div>
-    <div id="date-display">Loading...</div>
+    <div id="date-display">...</div>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <span class="stat-label">SESSION</span>
+            <span class="stat-num" id="session-time">0m</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">STREAK</span>
+            <span class="stat-num" id="login-streak">0</span>
+        </div>
+    </div>
+
+    <div id="holiday-msg"></div>
 
     <div class="calendar">
-        <div class="calendar-header" id="month-year"></div>
         <table>
             <thead>
                 <tr>
-                    <th>SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th>
+                    <th style="color: #e74c3c;">S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
                 </tr>
             </thead>
             <tbody id="calendar-body"></tbody>
         </table>
     </div>
+
+    <div id="festival-footer"></div>
+    <div id="last-login-tag">Logged in at: <span id="start-time">--:--</span></div>
 </div>
 
 <script>
+    const indianHolidays = { '0-26': 'Republic Day', '7-15': 'Independence Day', '9-2': 'Gandhi Jayanti', '11-25': 'Christmas' };
+    let sessionSeconds = 0;
+    const todayStr = new Date().toDateString();
+
+    function handleTracking() {
+        let loginHistory = JSON.parse(localStorage.getItem('sf_login_history') || "[]");
+        let streak = parseInt(localStorage.getItem('sf_streak') || "0");
+        let lastLogin = localStorage.getItem('sf_last_login');
+        let startTime = localStorage.getItem('sf_start_time') || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        if (lastLogin !== todayStr) {
+            loginHistory.push(todayStr);
+            if (loginHistory.length > 100) loginHistory.shift();
+            
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            streak = (lastLogin === yesterday.toDateString()) ? (streak + 1) : 1;
+            
+            startTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            localStorage.setItem('sf_login_history', JSON.stringify(loginHistory));
+            localStorage.setItem('sf_streak', streak);
+            localStorage.setItem('sf_last_login', todayStr);
+            localStorage.setItem('sf_start_time', startTime);
+        }
+        document.getElementById('login-streak').textContent = streak;
+        document.getElementById('start-time').textContent = startTime;
+    }
+
     function updateDashboard() {
         const now = new Date();
         const hrs = now.getHours();
+        const dateKey = `${now.getMonth()}-${now.getDate()}`;
         
-        // 1. Extract Name from the URL (e.g., ?name=John)
+        sessionSeconds++;
+        document.getElementById('session-time').textContent = Math.floor(sessionSeconds / 60) + "m";
+
         const urlParams = new URLSearchParams(window.location.search);
-        let name = urlParams.get('name') || "User";
-        document.getElementById('user-name').textContent = name;
+        document.getElementById('user-name').textContent = urlParams.get('name') || "User";
 
-        // 2. Dynamic Greeting Logic
-        let greet = "Good Night";
-        if (hrs >= 5 && hrs < 12) greet = "Good Morning";
-        else if (hrs >= 12 && hrs < 17) greet = "Good Afternoon";
-        else if (hrs >= 17 && hrs < 21) greet = "Good Evening";
-        
-        // Simple "Good Bye" check if logout is detected via URL
-        if (urlParams.get('status') === 'logout') {
-            greet = "Good Bye";
-        }
-
+        let greet = hrs < 12 ? "Good Morning" : hrs < 16 ? "Good Afternoon" : hrs < 20 ? "Good Evening" : "Good Night";
+        if (urlParams.get('status') === 'logout') greet = "Good Bye";
         document.getElementById('greet-text').textContent = greet;
 
-        // 3. Clock Update
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-        
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date-display').textContent = now.toLocaleDateString(undefined, options);
+        const festival = indianHolidays[dateKey];
+        const isSunday = (now.getDay() === 0);
+        document.getElementById('holiday-msg').textContent = (festival || isSunday) ? "Time to Rest!" : "";
+        document.getElementById('festival-footer').textContent = festival ? `Today: ${festival}` : isSunday ? "Happy Sunday!" : "Build something great today";
+
+        document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+        document.getElementById('date-display').textContent = now.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
     }
 
     function generateCalendar() {
         const now = new Date();
         const month = now.getMonth();
         const year = now.getFullYear();
-        const today = now.getDate();
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        
-        document.getElementById('month-year').textContent = `${monthNames[month]} ${year}`;
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const loginHistory = JSON.parse(localStorage.getItem('sf_login_history') || "[]");
+        
         const tbl = document.getElementById("calendar-body");
         tbl.innerHTML = "";
 
@@ -192,21 +205,25 @@
                 let cell = document.createElement("td");
                 if (i === 0 && j < firstDay) {
                     cell.textContent = "";
-                } else if (date > daysInMonth) {
-                    break;
-                } else {
+                } else if (date <= daysInMonth) {
                     cell.textContent = date;
-                    if (date === today) cell.classList.add("today");
+                    let checkDate = new Date(year, month, date).toDateString();
+                    
+                    if (loginHistory.includes(checkDate)) {
+                        cell.classList.add("logged-in-day");
+                    }
+                    if (j === 0) cell.classList.add("sun-col");
+                    if (date === now.getDate()) cell.classList.add("today");
                     date++;
                 }
                 row.appendChild(cell);
             }
-            tbl.appendChild(row);
+            if (row.innerText.trim() !== "") tbl.appendChild(row);
             if (date > daysInMonth) break;
         }
     }
 
-    // Refresh every second
+    handleTracking();
     setInterval(updateDashboard, 1000);
     updateDashboard();
     generateCalendar();
