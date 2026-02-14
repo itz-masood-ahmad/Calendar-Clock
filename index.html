@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Sidebar Utility</title>
+    <style>
+        :root {
+            --bg-page: #e0e0e0; /* Soft Gray Background */
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-secondary: #636e72;
+            --accent-gray: #b2bec3;
+            --today-bg: #4b4b4b; /* Darker gray for today */
+            --border-subtle: #d1d1d1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            /* Critical for vertical centering on the right side */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 320px;
+            background: var(--card-bg);
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease;
+        }
+
+        /* Clock Styles */
+        #clock {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2px;
+            letter-spacing: -1px;
+            color: var(--text-main);
+            font-variant-numeric: tabular-nums;
+        }
+
+        #date-display {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Calendar Styles */
+        .calendar {
+            width: 100%;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 4px;
+        }
+
+        th {
+            font-size: 0.65rem;
+            color: var(--accent-gray);
+            padding: 8px 0;
+            text-transform: uppercase;
+        }
+
+        td {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            color: var(--text-main);
+            cursor: default;
+        }
+
+        .today {
+            background-color: var(--today-bg);
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .empty-cell {
+            visibility: hidden;
+        }
+
+        /* Subtle hover effect for the card */
+        .container:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="clock">00:00:00</div>
+    <div id="date-display">...</div>
+
+    <div class="calendar">
+        <div class="calendar-header" id="month-year"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        
+        document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+        
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('date-display').textContent = now.toLocaleDateString(undefined, options);
+    }
+
+    function generateCalendar() {
+        const now = new Date();
+        const month = now.getMonth();
+        const year = now.getFullYear();
+        const today = now.getDate();
+
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+        
+        document.getElementById('month-year').textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const tbl = document.getElementById("calendar-body");
+        tbl.innerHTML = "";
+
+        let date = 1;
+        for (let i = 0; i < 6; i++) {
+            let row = document.createElement("tr");
+
+            for (let j = 0; j < 7; j++) {
+                let cell = document.createElement("td");
+                if (i === 0 && j < firstDay) {
+                    cell.classList.add("empty-cell");
+                    cell.textContent = "";
+                } else if (date > daysInMonth) {
+                    // Do nothing for cells after the end of the month
+                } else {
+                    cell.textContent = date;
+                    if (date === today) {
+                        cell.classList.add("today");
+                    }
+                    date++;
+                }
+                row.appendChild(cell);
+            }
+            if (row.cells.length > 0 && row.innerText.trim() !== "") {
+                tbl.appendChild(row);
+            }
+            if (date > daysInMonth) break;
+        }
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+    generateCalendar();
+</script>
+
+</body>
+</html>
