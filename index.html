@@ -3,67 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salesforce Sidebar Utility</title>
+    <title>Utility Sidebar</title>
     <style>
         :root {
-            --bg-page: #e0e0e0; /* Soft Gray Background */
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --accent-color: #666;
             --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-secondary: #636e72;
-            --accent-gray: #b2bec3;
-            --today-bg: #4b4b4b; /* Darker gray for today */
-            --border-subtle: #d1d1d1;
-        }
-
-        * {
-            box-sizing: border-box;
+            --border: #ddd;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-page);
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
-            /* Critical for vertical centering on the right side */
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: center; /* Centers vertically for your 16:10 screen */
             align-items: center;
             height: 100vh;
-            width: 100vw;
-            overflow: hidden;
         }
 
         .container {
             width: 90%;
-            max-width: 320px;
+            max-width: 300px;
             background: var(--card-bg);
-            padding: 30px 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-subtle);
-            transition: transform 0.3s ease;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        /* Dynamic Greeting Section */
+        #greeting-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #greet-text {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #user-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            text-transform: capitalize;
         }
 
         /* Clock Styles */
         #clock {
-            font-size: 3rem;
-            font-weight: 700;
+            font-size: 2.8rem;
+            font-weight: 300;
             text-align: center;
-            margin-bottom: 2px;
-            letter-spacing: -1px;
-            color: var(--text-main);
-            font-variant-numeric: tabular-nums;
+            margin-bottom: 5px;
+            color: var(--text-color);
         }
 
         #date-display {
             text-align: center;
             font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
+            color: var(--accent-color);
+            margin-bottom: 25px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
         }
 
         /* Calendar Styles */
@@ -73,65 +84,54 @@
 
         .calendar-header {
             text-align: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--text-main);
-            padding-bottom: 12px;
-            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 4px;
+            border-collapse: collapse;
         }
 
         th {
-            font-size: 0.65rem;
-            color: var(--accent-gray);
-            padding: 8px 0;
-            text-transform: uppercase;
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            padding: 5px 0;
         }
 
         td {
             text-align: center;
-            padding: 10px 0;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 8px;
-            color: var(--text-main);
-            cursor: default;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            border-radius: 4px;
         }
 
         .today {
-            background-color: var(--today-bg);
-            color: #ffffff !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .empty-cell {
-            visibility: hidden;
-        }
-
-        /* Subtle hover effect for the card */
-        .container:hover {
-            transform: translateY(-2px);
+            background-color: var(--text-color);
+            color: #fff;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div id="greeting-container">
+        <p id="greet-text">Welcome</p>
+        <span id="user-name">Trailblazer</span>
+    </div>
+
     <div id="clock">00:00:00</div>
-    <div id="date-display">...</div>
+    <div id="date-display">Loading...</div>
 
     <div class="calendar">
         <div class="calendar-header" id="month-year"></div>
         <table>
             <thead>
                 <tr>
-                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                    <th>SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th>
                 </tr>
             </thead>
             <tbody id="calendar-body"></tbody>
@@ -140,12 +140,32 @@
 </div>
 
 <script>
-    function updateClock() {
+    function updateDashboard() {
         const now = new Date();
+        const hrs = now.getHours();
+        
+        // 1. Extract Name from the URL (e.g., ?name=John)
+        const urlParams = new URLSearchParams(window.location.search);
+        let name = urlParams.get('name') || "User";
+        document.getElementById('user-name').textContent = name;
+
+        // 2. Dynamic Greeting Logic
+        let greet = "Good Night";
+        if (hrs >= 5 && hrs < 12) greet = "Good Morning";
+        else if (hrs >= 12 && hrs < 17) greet = "Good Afternoon";
+        else if (hrs >= 17 && hrs < 21) greet = "Good Evening";
+        
+        // Simple "Good Bye" check if logout is detected via URL
+        if (urlParams.get('status') === 'logout') {
+            greet = "Good Bye";
+        }
+
+        document.getElementById('greet-text').textContent = greet;
+
+        // 3. Clock Update
         const h = String(now.getHours()).padStart(2, '0');
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
-        
         document.getElementById('clock').textContent = `${h}:${m}:${s}`;
         
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -157,47 +177,38 @@
         const month = now.getMonth();
         const year = now.getFullYear();
         const today = now.getDate();
-
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"];
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         
         document.getElementById('month-year').textContent = `${monthNames[month]} ${year}`;
-
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
         const tbl = document.getElementById("calendar-body");
         tbl.innerHTML = "";
 
         let date = 1;
         for (let i = 0; i < 6; i++) {
             let row = document.createElement("tr");
-
             for (let j = 0; j < 7; j++) {
                 let cell = document.createElement("td");
                 if (i === 0 && j < firstDay) {
-                    cell.classList.add("empty-cell");
                     cell.textContent = "";
                 } else if (date > daysInMonth) {
-                    // Do nothing for cells after the end of the month
+                    break;
                 } else {
                     cell.textContent = date;
-                    if (date === today) {
-                        cell.classList.add("today");
-                    }
+                    if (date === today) cell.classList.add("today");
                     date++;
                 }
                 row.appendChild(cell);
             }
-            if (row.cells.length > 0 && row.innerText.trim() !== "") {
-                tbl.appendChild(row);
-            }
+            tbl.appendChild(row);
             if (date > daysInMonth) break;
         }
     }
 
-    setInterval(updateClock, 1000);
-    updateClock();
+    // Refresh every second
+    setInterval(updateDashboard, 1000);
+    updateDashboard();
     generateCalendar();
 </script>
 
